@@ -1,12 +1,10 @@
 package com.movie.bookng.services;
 
 import com.movie.bookng.data.*;
-import com.movie.bookng.validator.AudiValidator;
 import com.movie.bookng.validator.MovieValidation;
 import com.movie.bookng.validator.ShowsValidator;
 
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -34,19 +32,6 @@ public class MovieServicesImp implements MovieService {
         MovieValidation.detailsValidator(movieDto);
         MovieDAO.addMovie(movieDto);
 
-    }
-
-    @Override
-    public void createAuditorium() {
-        AudiDto  audiDto = new AudiDto();
-        System.out.println("Enter Auditorium Name: ");
-        String auditoriumName = sc.nextLine();
-        System.out.println("Enter room number: ");
-        String auditoriumRoomNumber = sc.next();
-        audiDto.setAuditoriumName(auditoriumName);
-        audiDto.setRoomNumber(auditoriumRoomNumber);
-        AudiValidator.audiValidator(audiDto);
-        AudiDAO.createAdu(audiDto);
     }
 
     @Override

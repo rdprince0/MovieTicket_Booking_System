@@ -1,4 +1,4 @@
-package com.movie.bookng.validator;
+package com.movie.bookng.CustomException;
 
 public class AudiIdException extends RuntimeException {
     public AudiIdException(String message) {

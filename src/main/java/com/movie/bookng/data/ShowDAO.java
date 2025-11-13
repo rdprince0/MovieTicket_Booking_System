@@ -1,8 +1,8 @@
 package com.movie.bookng.data;
 
+import com.movie.bookng.CustomException.AudiIdException;
 import com.movie.bookng.util.ConfigConnection;
-import com.movie.bookng.validator.AudiIdException;
-import com.movie.bookng.validator.MovieIdException;
+import com.movie.bookng.CustomException.MovieIdException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -49,7 +49,7 @@ public class ShowDAO {
                     throw new MovieIdException("Movie ID not exists : " + showDTo.getMovieId());
                 }
 
-                String sql2 ="select * from auditoriums where auditoriumId = ?";
+                String sql2 ="select * from auditorium where auditoriumId = ?";
                 PreparedStatement smt2 = conn.prepareStatement(sql2);
                 smt2.setInt(1, showDTo.getAudiId());
                 ResultSet rs2 = smt2.executeQuery();

@@ -2,12 +2,9 @@ package com.movie.bookng.data;
 
 import com.movie.bookng.CustomException.DuplicateMovie;
 import com.movie.bookng.util.ConfigConnection;
-import com.movie.bookng.validator.AudiIdException;
-import com.movie.bookng.validator.MovieIdException;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Scanner;
 
 public class MovieDAO {
     private static DataSource ds;
