@@ -1,5 +1,7 @@
 package com.movie.bookng.menu;
 
+import com.movie.bookng.services.ViewSeatsIml;
+
 import java.util.Scanner;
 
 public class UserMenu {
@@ -14,12 +16,35 @@ public class UserMenu {
         System.out.print("Enter your choice : ");
         int choice = sc.nextInt();
         switch (choice) {
-            case 1 -> System.out.println("View Seats");
-            case 2 -> System.out.println("Book Tickets");
-            case 3 -> System.out.println("Confirm Payment");
-            case 4 -> System.out.println("Cancel Payment");
-            case 5 -> System.exit(0);
-            default -> System.out.println("Invalid option");
+            case 1:{
+                ViewSeatsIml  viewSeatsIml = new ViewSeatsIml();
+                viewSeatsIml.viewSeats();
+                break;
+            }
+            case 2 :
+            {
+                System.out.println("Book Tickets");
+                break;
+            }
+            case 3 :
+            {
+                System.out.println("Confirm Payment");
+                break;
+            }
+            case 4 :
+            {
+                System.out.println("Cancel Payment");
+                break;
+            }
+            case 5 :
+            {
+                System.exit(0);
+                break;
+            }
+            default :
+            {
+                System.out.println("Invalid option");
+            }
         }
     }
 }
