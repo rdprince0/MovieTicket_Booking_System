@@ -1,6 +1,7 @@
 package com.movie.bookng.validator;
 
 import com.movie.bookng.data.MovieDTo;
+import com.movie.bookng.data.ShowDTo;
 
 import java.sql.Time;
 
@@ -10,10 +11,10 @@ public class ShowsValidator {
     Time showStartTime;
     Time showEndTime;
 
-    public static void showsValidator(MovieDTo movieDTo) {
-        movieIDValidator(movieDTo.getMovieId());
-        audiIdValidator(movieDTo.getAudiId());
-        validateShowTimes(movieDTo);
+    public static void showsValidator(ShowDTo showDto) {
+        movieIDValidator(showDto.getMovieId());
+        audiIdValidator(showDto.getAudiId());
+        validateShowTimes(showDto);
     }
     public static void movieIDValidator(Integer movieId) {
         if(movieId == null || movieId <= 0) {
@@ -28,7 +29,7 @@ public class ShowsValidator {
             throw new IllegalArgumentException("Show ID should not be null or less than zero");
         }
     }
-    private static void validateShowTimes(MovieDTo dto) {
+    private static void validateShowTimes(ShowDTo dto) {
         if (dto.getShowStartTime() == null || dto.getShowEndTime() == null) {
             throw new IllegalArgumentException("❌ Show start time and end time must not be null!");
         }

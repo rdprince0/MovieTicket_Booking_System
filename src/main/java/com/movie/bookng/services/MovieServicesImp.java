@@ -1,7 +1,6 @@
 package com.movie.bookng.services;
 
-import com.movie.bookng.data.MovieDAO;
-import com.movie.bookng.data.MovieDTo;
+import com.movie.bookng.data.*;
 import com.movie.bookng.validator.AudiValidator;
 import com.movie.bookng.validator.MovieValidation;
 import com.movie.bookng.validator.ShowsValidator;
@@ -14,9 +13,10 @@ import java.util.Scanner;
 
 public class MovieServicesImp implements MovieService {
     private static final Scanner sc = new Scanner(System.in);
-    private static final MovieDTo movieDto = new MovieDTo();
+
     @Override
     public void addMovie() {
+        MovieDTo movieDto = new MovieDTo();
         System.out.println("Enter Movie Name: ");
         String movieName = sc.nextLine();
         System.out.println("Enter Movie Language: ");
@@ -38,18 +38,20 @@ public class MovieServicesImp implements MovieService {
 
     @Override
     public void createAuditorium() {
+        AudiDto  audiDto = new AudiDto();
         System.out.println("Enter Auditorium Name: ");
         String auditoriumName = sc.nextLine();
         System.out.println("Enter room number: ");
         String auditoriumRoomNumber = sc.next();
-        movieDto.setAuditoriumName(auditoriumName);
-        movieDto.setRoomNumber(auditoriumRoomNumber);
-        AudiValidator.audiValidator(movieDto);
-        MovieDAO.createAdu(movieDto);
+        audiDto.setAuditoriumName(auditoriumName);
+        audiDto.setRoomNumber(auditoriumRoomNumber);
+        AudiValidator.audiValidator(audiDto);
+        AudiDAO.createAdu(audiDto);
     }
 
     @Override
     public void createShows() {
+        ShowDTo showDto = new ShowDTo();
         System.out.println("Enter movie Id");
         Integer movieId = sc.nextInt();
         System.out.println("Enter auditorium Id");
@@ -68,12 +70,12 @@ public class MovieServicesImp implements MovieService {
         LocalTime  showEnd= LocalTime.parse(t2, DateTimeFormatter.ofPattern("HH:mm"));
         // Convert LocalTime to java.sql.Time for database
         Time showEndTime = Time.valueOf(showEnd);
-        movieDto.setMovieId(movieId);
-        movieDto.setAudiId(audId);
-        movieDto.setShowStartTime(showStartTime);
-        movieDto.setShowEndTime(showEndTime);
-        ShowsValidator.showsValidator(movieDto);
-        MovieDAO.createShow(movieDto);
+        showDto.setMovieId(movieId);
+        showDto.setAudiId(audId);
+        showDto.setShowStartTime(showStartTime);
+        showDto.setShowEndTime(showEndTime);
+        ShowsValidator.showsValidator(showDto);
+        ShowDAO.createShow(showDto);
     }
 
 }

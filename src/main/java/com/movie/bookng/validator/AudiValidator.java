@@ -1,14 +1,15 @@
 package com.movie.bookng.validator;
 
+import com.movie.bookng.data.AudiDto;
 import com.movie.bookng.data.MovieDTo;
 
 import javax.xml.validation.Validator;
 
 public class AudiValidator {
-    public static void audiValidator(MovieDTo movieDTo)
+    public static void audiValidator(AudiDto audiDto)
     {
-        validateAudi(movieDTo.getAuditoriumName());
-        roomValidator(movieDTo.getAuditoriumName());
+        validateAudi(audiDto.getAuditoriumName());
+        roomValidator(audiDto.getAuditoriumName());
     }
 
     public static void validateAudi(String audiName)
