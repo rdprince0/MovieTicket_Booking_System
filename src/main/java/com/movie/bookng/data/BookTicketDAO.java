@@ -14,7 +14,7 @@ public class BookTicketDAO {
         try {
             ds = ConfigConnection.getDataSource();
         } catch (Exception e) {
-            System.err.println("❌ Failed to initialize DataSource: " + e.getMessage());
+            System.err.println(" Failed to initialize DataSource: " + e.getMessage());
         }
     }
 
@@ -39,12 +39,12 @@ public class BookTicketDAO {
             rs = ps.executeQuery();
 
             if (!rs.next()) {
-                throw new SeatException("❌ Seat does not exist!");
+                throw new SeatException("Seat does not exist!");
             }
 
             String status = rs.getString("status");
             if (!"AVAILABLE".equalsIgnoreCase(status)) {
-                throw new SeatException("❌ Seat is not AVAILABLE!");
+                throw new SeatException("Seat is not AVAILABLE!");
             }
             rs.close();
             ps.close();
@@ -66,8 +66,10 @@ public class BookTicketDAO {
 
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                throw new SeatException("❌ Booking failed — no record inserted!");
+                throw new SeatException("Booking failed — no record inserted!");
             }
+
+//            Featching the booking Id...................................................................................
             String sqlBook = "select bookingId from bookings where userPhone=?";
             PreparedStatement bookingStmt = conn.prepareStatement(sqlBook);
             bookingStmt.setString(1, bkD.getUserMobileNo());
@@ -75,7 +77,7 @@ public class BookTicketDAO {
             if (rs.next()) {
                 bookingId = rs.getInt("bookingId");
             } else {
-                throw new SeatException("❌ Failed to retrieve booking ID!");
+                throw new SeatException("Failed to retrieve booking ID!");
             }
             rs.close();
             ps.close();
@@ -87,15 +89,15 @@ public class BookTicketDAO {
             ps.executeUpdate();
             ps.close();
 
-            conn.commit(); // ✅ Commit transaction
-            System.out.println("✅ Booking successful! Booking ID: " + bookingId);
+            conn.commit(); //  Commit transaction
+            System.out.println("Booking successful! Booking ID: " + bookingId);
 
         } catch (SeatException | SQLException e) {
             try {
                 if (conn != null) conn.rollback();
-                System.err.println("❌ Transaction rolled back: " + e.getMessage());
+                System.err.println(" Transaction rolled back: " + e.getMessage());
             } catch (SQLException ex) {
-                System.err.println("❌ Error rolling back transaction: " + ex.getMessage());
+                System.err.println("Error rolling back transaction: " + ex.getMessage());
             }
         } finally {
             try { if (conn != null) conn.setAutoCommit(true); } catch (SQLException ex) {}

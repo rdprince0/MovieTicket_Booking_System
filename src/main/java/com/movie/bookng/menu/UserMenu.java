@@ -2,6 +2,7 @@ package com.movie.bookng.menu;
 
 import com.movie.bookng.services.BookTicketImpl;
 import com.movie.bookng.services.ViewSeatsIml;
+import com.movie.bookng.validator.PaymentValidator;
 
 import java.util.Scanner;
 
@@ -30,7 +31,8 @@ public class UserMenu {
             }
             case 3 :
             {
-                System.out.println("Confirm Payment");
+                PaymentMenu paymentMenu = new PaymentMenu();
+                paymentMenu.paymentCofirm();
                 break;
             }
             case 4 :

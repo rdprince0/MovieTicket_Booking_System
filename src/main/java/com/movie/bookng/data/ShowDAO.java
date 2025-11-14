@@ -21,7 +21,7 @@ public class ShowDAO {
         try {
             temp = ConfigConnection.getDataSource();
         } catch (Exception e) {
-            System.err.println("❌ Failed to initialize DataSource: " + e.getMessage());
+            System.err.println("Failed to initialize DataSource: " + e.getMessage());
         }
         ds = temp;
     }
@@ -89,8 +89,8 @@ public class ShowDAO {
         }
         catch(SQLException e)
         {
-            System.err.println("❌ Database error (HikariCP)");
-            throw new RuntimeException("❌ Database error (HikariCP)", e);
+            System.err.println(" Database error (HikariCP)");
+            throw new RuntimeException("Database error (HikariCP)", e);
         }
 
     }

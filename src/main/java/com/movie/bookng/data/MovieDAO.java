@@ -14,7 +14,7 @@ public class MovieDAO {
         try {
             temp = ConfigConnection.getDataSource();
         } catch (Exception e) {
-            System.err.println("❌ Failed to initialize DataSource: " + e.getMessage());
+            System.err.println(" Failed to initialize DataSource: " + e.getMessage());
         }
         ds = temp;
     }
@@ -61,14 +61,14 @@ public class MovieDAO {
             }
             else
             {
-                System.out.println("⚠️ Movie not added. Please check your data.");
+                System.out.println("Movie not added. Please check your data.");
             }
 
         }
         catch (SQLException e)
         {
-            System.err.println("❌ Database error (HikariCP)" );
-            throw new RuntimeException("❌ Database error (HikariCP)", e);
+            System.err.println("Database error (HikariCP)" );
+            throw new RuntimeException(" Database error (HikariCP)", e);
 //            e.printStackTrace();
         }
     }

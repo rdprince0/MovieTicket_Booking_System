@@ -17,7 +17,7 @@ public class ViewSeatDAO {
         try {
             ds = ConfigConnection.getDataSource();
         } catch (Exception e) {
-            System.err.println("❌ Failed to initialize DataSource: " + e.getMessage());
+            System.err.println("Failed to initialize DataSource: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class ViewSeatDAO {
                 throw new ViewSeatException("Show ID does not exist: " + showId);
             }
 
-            System.out.println("\n🎟️ Seat Map for Show ID: " + showId);
+            System.out.println("\n Seat Map for Show ID: " + showId);
             System.out.println("Legend: [A]=Available  [B]=Booked  [H]=Held\n");
 
             String currentRow = ""; // Track current row

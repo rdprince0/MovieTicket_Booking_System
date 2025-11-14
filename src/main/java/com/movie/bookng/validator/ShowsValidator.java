@@ -31,11 +31,11 @@ public class ShowsValidator {
     }
     private static void validateShowTimes(ShowDTo dto) {
         if (dto.getShowStartTime() == null || dto.getShowEndTime() == null) {
-            throw new IllegalArgumentException("❌ Show start time and end time must not be null!");
+            throw new IllegalArgumentException("Show start time and end time must not be null!");
         }
 
         if (dto.getShowEndTime().before(dto.getShowStartTime())) {
-            throw new IllegalArgumentException("❌ Show end time must be after start time!");
+            throw new IllegalArgumentException("Show end time must be after start time!");
         }
     }
 }

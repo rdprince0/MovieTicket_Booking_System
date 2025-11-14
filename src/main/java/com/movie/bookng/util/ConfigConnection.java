@@ -27,11 +27,11 @@ public class ConfigConnection {
         config.setIdleTimeout(60000);
          ds = new HikariDataSource(config);
 
-        System.out.println("✅ Connected to database using HikariCP connection pool...");
+        System.out.println("Connected to database using HikariCP connection pool...");
 
         } catch (Exception e) {
 
-            System.err.println("❌ Failed to initialize database connection: " + e.getMessage());
+            System.err.println("Failed to initialize database connection: " + e.getMessage());
         }
 
     }
