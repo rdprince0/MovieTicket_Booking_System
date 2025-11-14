@@ -1,5 +1,6 @@
 package com.movie.bookng.menu;
 
+import com.movie.bookng.services.BookTicketImpl;
 import com.movie.bookng.services.ViewSeatsIml;
 
 import java.util.Scanner;
@@ -23,7 +24,8 @@ public class UserMenu {
             }
             case 2 :
             {
-                System.out.println("Book Tickets");
+                BookTicketImpl  bookTicketImpl = new BookTicketImpl();
+                bookTicketImpl.bookTicket();
                 break;
             }
             case 3 :

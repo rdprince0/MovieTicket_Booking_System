@@ -4,11 +4,7 @@ import com.movie.bookng.CustomException.SeatException;
 import com.movie.bookng.util.ConfigConnection;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Scanner;
+import java.sql.*;
 
 public class BookTicketDAO {
 
@@ -23,96 +19,87 @@ public class BookTicketDAO {
     }
 
     public static void bookTicket(BookTicketDTO bkD) {
-
         String checkSql = "SELECT seatId, status FROM show_seats WHERE showId = ? AND seatId = ? FOR UPDATE";
         String holdSql = "UPDATE show_seats SET status = 'HELD' WHERE showId = ? AND seatId = ?";
         String bookSql = "UPDATE show_seats SET status = 'BOOKED' WHERE showId = ? AND seatId = ?";
-        String insertBookingSql = "insert into bookings (userName,userPhone,fkShowId,totalAmount) values (?,?,?,?)";
+        String insertBookingSql = "INSERT INTO bookings (userName,userPhone,fkShowId,totalAmount) VALUES (?,?,?,?)";
 
-        try (Connection conn = ds.getConnection()) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = ds.getConnection();
             conn.setAutoCommit(false); // Start transaction
 
-            try {
-                // Step 1: Check availability
-                try (PreparedStatement ps = conn.prepareStatement(checkSql)) {
-                    ps.setInt(1, bkD.getShowId());
-                    ps.setInt(2, bkD.getSeatId());
-                    ResultSet rs = ps.executeQuery();
+            // Step 1: Check seat availability
+            ps = conn.prepareStatement(checkSql);
+            ps.setInt(1, bkD.getShowId());
+            ps.setInt(2, bkD.getSeatId());
+            rs = ps.executeQuery();
 
-                    if (!rs.next()) {
-                        throw new SeatException("❌ Seat does not exist!");
-                    }
-
-                    String status = rs.getString("status");
-                    if (!"AVAILABLE".equalsIgnoreCase(status)) {
-                        throw new SeatException("❌ Seat is not AVAILABLE!");
-                    }
-                }
-
-                // Step 2: Hold the seat temporarily
-                try (PreparedStatement ps = conn.prepareStatement(holdSql)) {
-                    ps.setInt(1, bkD.getShowId());
-                    ps.setInt(2, bkD.getSeatId());
-                    ps.executeUpdate();
-                }
-
-                // Step 3: Create booking record
-                Integer bookingId ;
-                try
-                {
-                    Scanner sc  = new Scanner(System.in);
-                    System.out.println("Enter userName");
-                    String userName = sc.nextLine();
-                    System.out.println("Enter userPhone");
-                    String userPhone = sc.next();
-                    System.out.println("Enter ShowId");
-                    Integer fkShowId = sc.nextInt();
-                    System.out.println("Enter totalAmount");
-                    Integer totalAmount = sc.nextInt();
-                    PreparedStatement ps = conn.prepareStatement(insertBookingSql);
-                    ps.setString(1, userName);
-                    ps.setString(2, userPhone);
-                    ps.setInt(3, fkShowId);
-                    ps.setInt(4, totalAmount);
-                    Integer rows = ps.executeUpdate();
-
-
-                    if (rows == 0 ) {
-                        throw new SeatException("❌ Booking failed — no record inserted!");
-                    }
-
-                    // Get generated booking ID
-                    String bookingIdSql = "select bookingId from bookings where userPhone = ?";
-
-                    PreparedStatement bki = conn.prepareStatement(bookingIdSql);
-                    bki.setString(1, userPhone);
-                    ResultSet rs = bki.executeQuery();
-                    while(rs.next())
-                    {
-                        bookingId = rs.getInt("bookingId");
-                    }
-
-                }
-
-                // Step 4: Confirm booking (mark seat as BOOKED)
-                try (PreparedStatement ps = conn.prepareStatement(bookSql)) {
-                    ps.setInt(1, bkD.getShowId());
-                    ps.setInt(2, bkD.getSeatId());
-                    ps.executeUpdate();
-                }
-
-                conn.commit(); // ✅ Commit all steps
-                System.out.println("✅ Booking successful! Booking ID: " + bookingId);
-
-            } catch (SeatException | SQLException e) {
-                conn.rollback(); // Rollback on any failure
-                System.err.println("❌ Transaction rolled back: " + e.getMessage());
-            } finally {
-                conn.setAutoCommit(true);
+            if (!rs.next()) {
+                throw new SeatException("❌ Seat does not exist!");
             }
 
-        } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
+            String status = rs.getString("status");
+            if (!"AVAILABLE".equalsIgnoreCase(status)) {
+                throw new SeatException("❌ Seat is not AVAILABLE!");
+            }
+            rs.close();
+            ps.close();
+
+            // Step 2: Hold the seat temporarily
+            ps = conn.prepareStatement(holdSql);
+            ps.setInt(1, bkD.getShowId());
+            ps.setInt(2, bkD.getSeatId());
+            ps.executeUpdate();
+            ps.close();
+
+            // Step 3: Insert booking record
+            int bookingId = 0;
+            ps = conn.prepareStatement(insertBookingSql);
+            ps.setString(1, bkD.getUserName());
+            ps.setString(2, bkD.getUserMobileNo());
+            ps.setInt(3, bkD.getShowId());
+            ps.setInt(4, bkD.getTotalAmount());
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new SeatException("❌ Booking failed — no record inserted!");
+            }
+            String sqlBook = "select bookingId from bookings where userPhone=?";
+            PreparedStatement bookingStmt = conn.prepareStatement(sqlBook);
+            bookingStmt.setString(1, bkD.getUserMobileNo());
+            rs = bookingStmt.executeQuery();
+            if (rs.next()) {
+                bookingId = rs.getInt("bookingId");
+            } else {
+                throw new SeatException("❌ Failed to retrieve booking ID!");
+            }
+            rs.close();
+            ps.close();
+
+            // Step 4: Confirm booking (mark seat as BOOKED)
+            ps = conn.prepareStatement(bookSql);
+            ps.setInt(1, bkD.getShowId());
+            ps.setInt(2, bkD.getSeatId());
+            ps.executeUpdate();
+            ps.close();
+
+            conn.commit(); // ✅ Commit transaction
+            System.out.println("✅ Booking successful! Booking ID: " + bookingId);
+
+        } catch (SeatException | SQLException e) {
+            try {
+                if (conn != null) conn.rollback();
+                System.err.println("❌ Transaction rolled back: " + e.getMessage());
+            } catch (SQLException ex) {
+                System.err.println("❌ Error rolling back transaction: " + ex.getMessage());
+            }
+        } finally {
+            try { if (conn != null) conn.setAutoCommit(true); } catch (SQLException ex) {}
+            try { if (conn != null) conn.close(); } catch (SQLException ex) {}
         }
     }
 }
